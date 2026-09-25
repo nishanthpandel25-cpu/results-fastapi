@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Student Result Portal</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 30px 15px;
+
+            background:
+                radial-gradient(circle at top left, #243b55, transparent 40%),
+                radial-gradient(circle at bottom right, #141e30, transparent 45%),
+                linear-gradient(135deg, #0f172a, #020617);
+
+            color: #f8fafc;
+        }
+
+        /* Main Container */
+        .container {
+            width: 100%;
+            max-width: 850px;
+            padding: 45px;
+
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 24px;
+
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+
+            box-shadow:
+                0 25px 60px rgba(0, 0, 0, 0.45),
+                inset 0 1px rgba(255, 255, 255, 0.1);
+
+            animation: containerAppear 0.7s ease;
+        }
+
+        /* Header */
+        h1 {
+            text-align: center;
+            font-size: 34px;
+            font-weight: 700;
+            letter-spacing: -1px;
+            margin-bottom: 10px;
+
+            background: linear-gradient(
+                90deg,
+                #60a5fa,
+                #a78bfa,
+                #22d3ee
+            );
+
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .container::before {
+            content: "ACADEMIC RESULT MANAGEMENT SYSTEM";
+            display: block;
+            text-align: center;
+
+            color: #94a3b8;
+            font-size: 11px;
+            letter-spacing: 3px;
+            margin-bottom: 8px;
+        }
+
+        /* Search Area */
+        .search-box {
+            display: flex;
+            gap: 12px;
+            margin-top: 30px;
+            margin-bottom: 30px;
+        }
+
+        input {
+            flex: 1;
+            height: 52px;
+
+            padding: 0 18px;
+
+            color: white;
+            background: rgba(15, 23, 42, 0.75);
+
+            border: 1px solid rgba(148, 163, 184, 0.3);
+            border-radius: 12px;
+
+            outline: none;
+            font-size: 15px;
+
+            transition: 0.3s ease;
+        }
+
+        input::placeholder {
+            color: #94a3b8;
+        }
+
+        input:focus {
+            border-color: #60a5fa;
+
+            box-shadow:
+                0 0 0 3px rgba(96, 165, 250, 0.15),
+                0 0 25px rgba(96, 165, 250, 0.12);
+        }
+
+        /* Search Button */
+        button {
+            height: 52px;
+            padding: 0 28px;
+
+            border: none;
+            border-radius: 12px;
+
+            color: white;
+            font-size: 15px;
+            font-weight: 600;
+
+            cursor: pointer;
+
+            background: linear-gradient(
+                135deg,
+                #2563eb,
+                #7c3aed
+            );
+
+            box-shadow:
+                0 8px 25px rgba(37, 99, 235, 0.3);
+
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 12px 30px rgba(37, 99, 235, 0.45);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        /* Result Card */
+        .student-card {
+            margin-top: 25px;
+            padding: 28px;
+
+            background: rgba(15, 23, 42, 0.72);
+
+            border: 1px solid rgba(148, 163, 184, 0.18);
+            border-radius: 18px;
+
+            animation: resultAppear 0.5s ease;
+
+            box-shadow:
+                0 15px 40px rgba(0, 0, 0, 0.25);
+        }
+
+        .student-card h2 {
+            font-size: 26px;
+            margin-bottom: 20px;
+
+            color: #f8fafc;
+        }
+
+        .student-card p {
+            margin: 10px 0;
+            color: #cbd5e1;
+            font-size: 15px;
+        }
+
+        .student-card strong {
+            color: #94a3b8;
+            margin-right: 5px;
+        }
+
+        /* Table */
+        table {
+            width: 100%;
+            margin-top: 25px;
+
+            border-collapse: separate;
+            border-spacing: 0;
+
+            overflow: hidden;
+
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 12px;
+        }
+
+        th,
+        td {
+            padding: 14px 16px;
+            text-align: left;
+
+            border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+        }
+
+        th {
+            background: rgba(59, 130, 246, 0.15);
+
+            color: #93c5fd;
+
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        td {
+            color: #e2e8f0;
+            font-size: 14px;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tbody tr {
+            transition: 0.25s ease;
+        }
+
+        tbody tr:hover {
+            background: rgba(96, 165, 250, 0.08);
+        }
+
+        /* Grade */
+        td:last-child {
+            font-weight: 700;
+            color: #67e8f9;
+        }
+
+        /* Not Found */
+        .not-found {
+            margin-top: 20px;
+            padding: 18px;
+
+            text-align: center;
+
+            color: #fca5a5;
+
+            background: rgba(239, 68, 68, 0.1);
+
+            border: 1px solid rgba(239, 68, 68, 0.25);
+            border-radius: 12px;
+
+            animation: shake 0.4s ease;
+        }
+
+        /* Animations */
+        @keyframes containerAppear {
+            from {
+                opacity: 0;
+                transform: translateY(25px) scale(0.98);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes resultAppear {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes shake {
+            0% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-5px);
+            }
+
+            50% {
+                transform: translateX(5px);
+            }
+
+            75% {
+                transform: translateX(-3px);
+            }
+
+            100% {
+                transform: translateX(0);
+            }
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 600px) {
+
+            body {
+                padding: 15px;
+            }
+
+            .container {
+                padding: 25px 18px;
+                border-radius: 18px;
+            }
+
+            h1 {
+                font-size: 25px;
+            }
+
+            .search-box {
+                flex-direction: column;
+            }
+
+            input,
+            button {
+                width: 100%;
+            }
+
+            .student-card {
+                padding: 20px 15px;
+            }
+
+            .student-card h2 {
+                font-size: 22px;
+            }
+
+            th,
+            td {
+                padding: 11px 9px;
+            }
+        }
+
+    </style>
+</head>
+
+
+<body>
+
+    <div class="container">
+
+        <h1>🎓 Student Result Portal</h1>
+
+        <div class="search-box">
+
+            <input
+                type="text"
+                id="register_number"
+                placeholder="Enter Register Number"
+                autocomplete="off"
+            >
+
+            <button onclick="searchResult()">
+                🔍 Search Result
+            </button>
+
+        </div>
+
+        <div id="result"></div>
+
+    </div>
+
+
+    <script>
+
+        async function searchResult() {
+
+            let registerNumber =
+                document.getElementById(
+                    "register_number"
+                ).value.trim();
+
+
+            if (!registerNumber) {
+
+                document.getElementById("result").innerHTML =
+                    '<div class="not-found">⚠️ Please enter a register number.</div>';
+
+                return;
+            }
+
+
+            try {
+
+                let response =
+                    await fetch(
+                        "http://127.0.0.1:8000/results"
+                    );
+
+
+                if (!response.ok) {
+                    throw new Error("Server error");
+                }
+
+
+                let students =
+                    await response.json();
+
+
+                let student =
+                    students.find(
+                        student =>
+                            student.register_number === registerNumber
+                    );
+
+
+                if (student) {
+
+                    let output = `
+
+                        <div class="student-card">
+
+                            <h2>👨‍🎓 ${student.student_name}</h2>
+
+                            <p>
+                                <strong>Register Number:</strong>
+                                ${student.register_number}
+                            </p>
+
+                            <p>
+                                <strong>Department:</strong>
+                                ${student.department}
+                            </p>
+
+                            <table>
+
+                                <thead>
+
+                                    <tr>
+                                        <th>Subject</th>
+                                        <th>Grade</th>
+                                    </tr>
+
+                                </thead>
+
+                                <tbody>
+                    `;
+
+
+                    student.subjects.forEach(subject => {
+
+                        output += `
+
+                            <tr>
+
+                                <td>
+                                    ${subject.subject_name}
+                                </td>
+
+                                <td>
+                                    ${subject.grade}
+                                </td>
+
+                            </tr>
+
+                        `;
+
+                    });
+
+
+                    output += `
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+                    `;
+
+
+                    document.getElementById("result").innerHTML =
+                        output;
+
+
+                } else {
+
+                    document.getElementById("result").innerHTML =
+                        '<div class="not-found">❌ Student Not Found</div>';
+
+                }
+
+            } catch (error) {
+
+                document.getElementById("result").innerHTML =
+                    '<div class="not-found">⚠️ Unable to connect to the result server.</div>';
+
+                console.error(error);
+            }
+        }
+
+
+        /* Search when Enter key is pressed */
+
+        document
+            .getElementById("register_number")
+            .addEventListener("keypress", function(event) {
+
+                if (event.key === "Enter") {
+                    searchResult();
+                }
+
+            });
+
+    </script>
+
+</body>
+
+</html>
+
+
